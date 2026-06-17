@@ -5,6 +5,18 @@ O **Stock Box** é um aplicativo mobile focado no controle de estoque de produto
 
 ---
 
+## ✏️ Do Papel ao Código: O Esboço Idealizado
+
+Todo o fluxo de navegação, arquitetura de dados e interface do aplicativo foi concebido inicialmente através de um protótipo de baixa fidelidade desenhado à mão. Esse planejamento inicial foi fundamental para estruturar o comportamento do app antes de iniciar a programação:
+
+- **Mapeamento de Rotas:** O esboço definiu a navegação cíclica entre três telas principais: Listagem Geral (Home) ➡️ Detalhes do Item ➡️ Formulário de Edição/Cadastro.
+- **Lógica Matemática Prévia:** No papel, já havia a definição de que a tela de detalhes deveria calcular e expor o *Valor Bruto do Estoque* multiplicando o valor unitário pela quantidade disponível.
+- **Antecipação de Desafios:** O esboço já marcava como um dos principais desafios técnicos a capacidade de receber links/URLs dinâmicos de imagens externas no formulário e renderizá-los perfeitamente nos componentes de imagem da Home e Detalhes.
+
+![Esboço](assets/esboco.png)
+
+---
+
 ## 🚀 Funcionalidades
 
 - **Tela Inicial (Listagem):**
@@ -17,7 +29,7 @@ O **Stock Box** é um aplicativo mobile focado no controle de estoque de produto
   - Card de exibição para imagens externas ou local (*placeholder*).
   - Informações de estoque separadas por blocos visuais (*cards*).
   - Cálculo e exibição em destaque do valor total específico daquele lote de produtos.
-  
+
 - **Tela de Formulário (Cadastro/Edição):**
   - Campos validados para URL da imagem, nome, descrição, quantidade e preço unitário.
   - Reconhecimento automático do fluxo: a tela muda dinamicamente seu comportamento caso receba um ID para edição ou esteja criando um novo produto.
