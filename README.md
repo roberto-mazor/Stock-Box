@@ -12,10 +12,12 @@ O **Stock Box** é um aplicativo mobile focado no controle de estoque de produto
   - Painel de indicadores com totalizador de itens e soma automatizada do valor bruto do estoque ($Quantidade \times Preço$).
   - Filtro de busca por nome em tempo real.
   - Botão flutuante moderno fixado na base para rápida adição.
+
 - **Tela de Detalhes:**
   - Card de exibição para imagens externas ou local (*placeholder*).
   - Informações de estoque separadas por blocos visuais (*cards*).
   - Cálculo e exibição em destaque do valor total específico daquele lote de produtos.
+  
 - **Tela de Formulário (Cadastro/Edição):**
   - Campos validados para URL da imagem, nome, descrição, quantidade e preço unitário.
   - Reconhecimento automático do fluxo: a tela muda dinamicamente seu comportamento caso receba um ID para edição ou esteja criando um novo produto.
