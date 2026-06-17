@@ -1,3 +1,4 @@
+// Modelo do Produto completo vindo do Banco de Dados
 export interface Product {
   id: number;
   name: string;
@@ -5,4 +6,13 @@ export interface Product {
   quantity: number;
   price: number;
   image_url: string | null;
+}
+
+// Modelo dos dados que serão enviados no cadastro/edição (Sem exigir o ID)
+export interface ProductInput {
+  name: string;
+  description: string;
+  quantity: number;
+  price: number;
+  image_url: string;
 }
