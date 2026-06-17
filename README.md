@@ -13,8 +13,9 @@ Todo o fluxo de navegação, arquitetura de dados e interface do aplicativo foi 
 - **Lógica Matemática Prévia:** No papel, já havia a definição de que a tela de detalhes deveria calcular e expor o *Valor Bruto do Estoque* multiplicando o valor unitário pela quantidade disponível.
 - **Antecipação de Desafios:** O esboço já marcava como um dos principais desafios técnicos a capacidade de receber links/URLs dinâmicos de imagens externas no formulário e renderizá-los perfeitamente nos componentes de imagem da Home e Detalhes.
 
-![Esboço Idealizado do Stock Box](./assets/esboco.png)
-<img src="./assets/esboco.png" alt="Esboço Idealizado do Stock Box" width="100%" />
+- **Mapeamento de Rotas:** O esboço definiu a navegação...
+
+![Esboço Idealizado do Stock Box](esboco.png)
 
 ---
 
