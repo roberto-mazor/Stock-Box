@@ -1,6 +1,3 @@
-Aqui está o arquivo markdown totalmente corrigido e ajustado. Removi os tópicos duplicados, apliquei a tag correta para renderizar a imagem do esboço de maneira segura no GitHub com espaçamento correto, e consertei a seção final de "Como Executar" que estava com uma formatação quebrada de blocos de código.
-
-Pode copiar todo o código abaixo e substituir o conteúdo do seu `README.md`:
 
 ```markdown
 # 📦 Stock Box
@@ -13,7 +10,7 @@ O **Stock Box** é um aplicativo mobile focado no controle de estoque de produto
 
 Todo o fluxo de navegação, arquitetura de dados e interface do aplicativo foi concebido inicialmente através de um protótipo de baixa fidelidade desenhado à mão. Esse planejamento inicial foi fundamental para estruturar o comportamento do app antes de iniciar a programação:
 
-<img src="./assets/esboco.png" alt="Esboço Idealizado do Stock Box" width="100%" />
+![Esboço Inicial do Stock Box](assets/esboco.png)
 
 - **Mapeamento de Rotas:** O esboço definiu a navegação cíclica entre três telas principais: Listagem Geral (Home) ➡️ Detalhes do Item ➡️ Formulário de Edição/Cadastro.
 - **Lógica Matemática Prévia:** No papel, já havia a definição de que a tela de detalhes deveria calcular e expor o *Valor Bruto do Estoque* multiplicando o valor unitário pela quantidade disponível.
