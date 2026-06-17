@@ -15,7 +15,7 @@ Todo o fluxo de navegação, arquitetura de dados e interface do aplicativo foi 
 
 - **Mapeamento de Rotas:** O esboço definiu a navegação...
 
-![Esboço Idealizado do Stock Box](assets/esboco.png)
+![Esboço Idealizado do Stock Box](./assets/esboco.png)
 
 ---
 
