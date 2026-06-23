@@ -1,7 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 import { Product, ProductInput } from '../types';
 
-const db = SQLite.openDatabaseSync('stockbox_v2.db');
+const db = SQLite.openDatabaseSync('stockbox_v4.db');
 
 export const setupDatabase = (): void => {
   // 1. Cria a tabela se ela não existir
@@ -56,6 +56,13 @@ export const setupDatabase = (): void => {
         quantity: 12,
         price: 89.90,
         image_url: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=500&q=80'
+      },
+      {
+        name: 'Furadeira de Impacto Teste',
+        description: 'Item de teste para validação de carregamento de imagem no grid local',
+        quantity: 10,
+        price: 349.90,
+        image_url: 'https://m.media-amazon.com/images/I/71EP9kWvS0L._AC_SL1500_.jpg'
       }
     ];
 
