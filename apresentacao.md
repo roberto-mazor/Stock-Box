@@ -1,6 +1,6 @@
-# 📦 Stock-Box - Sistema de Gerenciamento de Estoque
+# Stock-Box - Sistema de Gerenciamento de Estoque
 
-## 🎯 Visão Geral do Projeto
+## Visão Geral do Projeto
 
 **Stock-Box** é uma aplicação mobile desenvolvida com **Expo** e **React Native** para gerenciar estoques de produtos de forma simples e eficiente. A aplicação permite cadastrar, visualizar, editar e buscar produtos com informações completas como nome, descrição, quantidade, preço e imagem.
 
@@ -8,7 +8,7 @@ O app foi construído com **TypeScript** para maior segurança de tipos e usa **
 
 ---
 
-## 🏗️ Arquitetura do Projeto
+##  Arquitetura do Projeto
 
 O projeto segue uma arquitetura em camadas com separação clara de responsabilidades:
 
@@ -31,7 +31,7 @@ Stock-Box/
 
 ---
 
-## 📚 Dependências Principais
+##  Dependências Principais
 
 ### Framework & Runtime
 - **expo**: `~56.0.12` - Framework para desenvolvimento React Native multiplataforma
@@ -59,7 +59,7 @@ Stock-Box/
 
 ---
 
-## 🗂️ Estrutura de Dados
+## Estrutura de Dados
 
 ### Tipos TypeScript (`src/types/index.ts`)
 
@@ -88,7 +88,7 @@ interface ProductInput {
 
 ---
 
-## 💾 Sistema de Banco de Dados (`src/database/database.ts`)
+## Sistema de Banco de Dados (`src/database/database.ts`)
 
 ### Inicialização: `setupDatabase()`
 
@@ -171,7 +171,7 @@ update: (id: number, product: ProductInput) => {
 
 ## 📱 Telas e Componentes
 
-### 1️⃣ Layout Principal (`app/_layout.tsx`)
+### 1️ Layout Principal (`app/_layout.tsx`)
 
 **Responsabilidade**: Inicialização e estrutura de roteamento
 
@@ -191,7 +191,7 @@ useEffect(() => {
 
 ---
 
-### 2️⃣ Tela Home - Listagem (`app/index.tsx`)
+### 2️ Tela Home - Listagem (`app/index.tsx`)
 
 **Responsabilidade**: Exibir lista de produtos com busca, filtro e resumo
 
@@ -256,7 +256,7 @@ const totalStockValue = products.reduce((acc, curr) => acc + (curr.price * curr.
 
 ---
 
-### 3️⃣ Tela de Detalhes (`app/detail.tsx`)
+### 3️ Tela de Detalhes (`app/detail.tsx`)
 
 **Responsabilidade**: Exibir informações completas de um produto com opções de edição
 
@@ -308,7 +308,7 @@ const totalStockValue = products.reduce((acc, curr) => acc + (curr.price * curr.
 
 ---
 
-### 4️⃣ Tela de Formulário (`app/form.tsx`)
+### 4 Tela de Formulário (`app/form.tsx`)
 
 **Responsabilidade**: Cadastro e edição de produtos
 
@@ -382,7 +382,7 @@ const handleSave = () => {
 
 ---
 
-## 🔄 Fluxo de Dados da Aplicação
+## Fluxo de Dados da Aplicação
 
 ```
 ┌─────────────────────────────────────────────────────┐
