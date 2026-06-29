@@ -5,18 +5,7 @@ import { Product } from '../src/types';
 import { database } from '../src/database/database';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-/**
- * 
- * 
- * Responsabilidades:
- * - Exibe lista de produtos em grid 2 colunas
- * - Permite filtrar produtos por nome em tempo real
- * - Calcula e exibe estatísticas (total de produtos e valor do estoque)
- * - Gerencia erro ao carregar imagens com fallback para placeholder
- * - Navega para tela de detalhes ou formulário
- * 
- * @returns {JSX.Element} Tela com FlatList de produtos e campo de filtro
- */
+
 export default function HomeScreen() { // Tela principal de listagem de produtos
   const insets = useSafeAreaInsets(); // Hook que retorna valores de espaçamento seguro (notches, câmeras, etc)
   const [products, setProducts] = useState<Product[]>([]); // Estado que armazena lista de produtos para renderização
@@ -27,8 +16,8 @@ export default function HomeScreen() { // Tela principal de listagem de produtos
   const loadProducts = useCallback(() => {
     
     const data = search ? database.getFiltered(search) : database.getAll(); // Se há termo de busca, busca produtos que contenham o termo; senão carrega todos
-    setProducts(data); // Atualiza estado local com o resultado da busca/carregamento
-  }, [search]); // Dependência: função é recriada quando 'search' muda
+    setProducts(data); 
+  }, [search]); 
 
   useFocusEffect( // Hook que executa função sempre que a tela ganha foco (volta do detalhe/form)
     useCallback(() => {

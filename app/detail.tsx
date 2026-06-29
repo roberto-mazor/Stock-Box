@@ -5,18 +5,6 @@ import { Product } from '../src/types';
 import { database } from '../src/database/database';
 import { useSafeAreaInsets } from 'react-native-safe-area-context'; // Importação adicionada
 
-/**
- * DetailScreen - Tela de visualização detalhada do produto
- * 
- * Responsabilidades:
- * - Exibe informações completas do produto (nome, quantidade, preço, descrição)
- * - Calcula e exibe o valor total do estoque (preço × quantidade)
- * - Permite navegação para tela de edição
- * - Carrega dados do banco quando a tela recebe foco
- * - Trata falta de produto com mensagem de carregamento
- * 
- * @returns {JSX.Element} ScrollView com detalhes do produto ou loading state
- */
 export default function DetailScreen() {
   // Hook que retorna espaçamento seguro da câmera e bordas do dispositivo
   const insets = useSafeAreaInsets();
