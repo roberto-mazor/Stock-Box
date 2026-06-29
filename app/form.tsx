@@ -4,18 +4,7 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { database } from '../src/database/database';
 import { useSafeAreaInsets } from 'react-native-safe-area-context'; // Importação adicionada
 
-/**
- * FormScreen - Tela de cadastro e edição de produtos
- * 
- * Responsabilidades:
- * - Renderiza formulário com 5 campos (imagem, nome, descrição, quantidade, preço)
- * - Modo duplo: novo produto (vazio) ou edição (pré-preenchido)
- * - Valida campos obrigatórios (nome, quantidade, preço)
- * - Salva ou atualiza produto no banco de dados
- * - Retorna à tela home após sucesso
- * 
- * @returns {JSX.Element} View com inputs e botão de salvamento
- */
+
 export default function FormScreen() {
   const insets = useSafeAreaInsets();  // espaçamento seguro para notches/câmeras
   // Extrai productId da rota - opcional, indica se é edição ou novo cadastro
@@ -28,15 +17,6 @@ export default function FormScreen() {
   const [quantity, setQuantity] = useState<string>(''); // Quantidade em estoque (obrigatório)
   const [price, setPrice] = useState<string>(''); // Preço unitário (obrigatório)
 
-  /**
-   * useEffect - Carrega dados do produto em modo edição
-   * 
-   * Lógica:
-   * - Executado quando productId muda ou componente monta
-   * - Se productId existe, busca o produto no banco
-   * - Pré-preenche todos os campos com dados do produto
-   * - Se productId não existe, deixa campos vazios (novo produto)
-   */
   useEffect(() => {
     if (productId) { // Se há ID, significa modo edição
       const product = database.getById(Number(productId)); // Busca produto pelo ID no banco de dados
@@ -50,18 +30,7 @@ export default function FormScreen() {
     }
   }, [productId]); // Dependência: recria quando productId muda
 
-  /**
-   * handleSave - Valida e salva o produto (novo ou atualizado)
-   * 
-   * Fluxo:
-   * 1. Valida campos obrigatórios (name, quantity, price)
-   * 2. Exibe alerta se algum campo obrigatório estiver vazio
-   * 3. Converte strings para tipos corretos (number)
-   * 4. Insere novo produto OU atualiza existente conforme modo
-   * 5. Navega de volta à tela home (router.replace)
-   * 
-   * @returns {void}
-   */
+
   const handleSave = () => {
     // Valida campos obrigatórios
     if (!name || !quantity || !price) {
