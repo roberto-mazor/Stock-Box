@@ -3,16 +3,18 @@ import React, { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { setupDatabase } from '../src/database/database';
 
+
 export default function Layout() {
   useEffect(() => {
-    setupDatabase(); // Inicializa o SQLite
+    setupDatabase(); // Inicializa a tabela e insere dados de demonstração no SQLite
   }, []);
 
+  // Retorna estrutura de navegação Stack com 3 telas principais
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="index" />
-      <Stack.Screen name="detail" />
-      <Stack.Screen name="form" />
+    <Stack screenOptions={{ headerShown: false }}> {/* Desativa o header padrão do Expo Router */}
+      <Stack.Screen name="index" /> {/* Tela Home - Listagem de produtos */}
+      <Stack.Screen name="detail" /> {/* Tela de Detalhes - Visualização individual */}
+      <Stack.Screen name="form" /> {/* Tela de Formulário - Cadastro/Edição */}
     </Stack>
   );
 }

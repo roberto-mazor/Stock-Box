@@ -5,83 +5,107 @@ import { Product } from '../src/types';
 import { database } from '../src/database/database';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-export default function HomeScreen() {
-  const insets = useSafeAreaInsets();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [search, setSearch] = useState<string>('');
+/**
+ * 
+ * 
+ * Responsabilidades:
+ * - Exibe lista de produtos em grid 2 colunas
+ * - Permite filtrar produtos por nome em tempo real
+ * - Calcula e exibe estatísticas (total de produtos e valor do estoque)
+ * - Gerencia erro ao carregar imagens com fallback para placeholder
+ * - Navega para tela de detalhes ou formulário
+ * 
+ * @returns {JSX.Element} Tela com FlatList de produtos e campo de filtro
+ */
+export default function HomeScreen() { // Tela principal de listagem de produtos
+  const insets = useSafeAreaInsets(); // Hook que retorna valores de espaçamento seguro (notches, câmeras, etc)
+  const [products, setProducts] = useState<Product[]>([]); // Estado que armazena lista de produtos para renderização
+  const [search, setSearch] = useState<string>('');   // Estado que armazena o termo de busca digitado no campo de filtro
   
-  // 🆕 ESTADO NOVO: Guarda quais imagens falharam ao carregar da internet
+  // Estado que rastreia quais imagens falharam ao carregar da URL (para mostrar fallback)
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
-
   const loadProducts = useCallback(() => {
-    const data = search ? database.getFiltered(search) : database.getAll();
-    setProducts(data);
-  }, [search]);
+    
+    const data = search ? database.getFiltered(search) : database.getAll(); // Se há termo de busca, busca produtos que contenham o termo; senão carrega todos
+    setProducts(data); // Atualiza estado local com o resultado da busca/carregamento
+  }, [search]); // Dependência: função é recriada quando 'search' muda
 
-  useFocusEffect(
+  useFocusEffect( // Hook que executa função sempre que a tela ganha foco (volta do detalhe/form)
     useCallback(() => {
-      loadProducts();
+      loadProducts(); // Recarrega lista quando volta para a tela
     }, [loadProducts])
   );
 
-  const totalProducts = products.length;
-  const totalStockValue = products.reduce((acc, curr) => acc + (curr.price * curr.quantity), 0);
+
+  const totalProducts = products.length;   // Calcula quantidade total de produtos na lista
+  const totalStockValue = products.reduce((acc, curr) => acc + (curr.price * curr.quantity), 0); // Calcula valor total do estoque: soma de (preço × quantidade) de cada produto
 
   return (
     <View style={[styles.container, { paddingTop: Math.max(insets.top, 20) }]}>
       <Text style={styles.headerTitle}>stock box</Text>
 
+      {/* Campo de input para filtrar produtos por nome em tempo real */}
       <TextInput
         style={styles.inputFilter}
         placeholder="filtro por nome"
         placeholderTextColor="#9ca3af"
-        value={search}
-        onChangeText={setSearch}
+        value={search} 
+        onChangeText={setSearch} 
       />
 
-      <View style={styles.summaryContainer}>
-        <Text style={styles.summaryText}>total de produtos: {totalProducts}</Text>
-        <Text style={styles.summaryText}>valor total estoque: R$ {totalStockValue.toFixed(2)}</Text>
+      <View style={styles.summaryContainer}> {/* Resumo com estatísticas do estoque */}
+        <Text style={styles.summaryText}>total de produtos: {totalProducts}</Text> {/* Exibe quantidade total de produtos na lista */}
+        <Text style={styles.summaryText}>valor total estoque: R$ {totalStockValue.toFixed(2)}</Text> {/* Exibe valor monetário total em estoque (preço × qtd para cada item) */}
       </View>
 
-      {/* 🔄 AQUI ESTÁ A FLATLIST ATUALIZADA E INTELIGENTE */}
+      {/* Lista virtual com 2 colunas para renderizar produtos de forma eficiente */}
       <FlatList
-        data={products}
-        keyExtractor={(item) => item.id.toString()}
-        numColumns={2}
-        columnWrapperStyle={styles.row}
+        data={products} 
+        keyExtractor={(item) => item.id.toString()} 
+        numColumns={2} 
+        columnWrapperStyle={styles.row} 
         contentContainerStyle={{ paddingBottom: 120 }} 
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={false} 
         renderItem={({ item }) => {
+          // Verifica se a imagem do produto falhou ao carregar
           const hasError = imageErrors[item.id];
+          // Verifica se URL da imagem é válida e não vazia
           const hasValidUrl = item.image_url && item.image_url.trim() !== "";
 
           return (
+            // Card clicável que navega para tela de detalhes
             <TouchableOpacity 
               style={styles.card} 
-              onPress={() => router.push({ pathname: '/detail', params: { productId: item.id } })}
+              onPress={() => router.push({ pathname: '/detail', params: { productId: item.id } })} 
             >
+              {/* Imagem do produto com fallback para placeholder */}
               <Image 
                 source={
+                  // Se URL é válida E não teve erro, carrega da URL; senão mostra placeholder
                   hasValidUrl && !hasError
                     ? { uri: item.image_url } 
                     : require('../assets/placeholder.png')
                 } 
                 style={styles.cardImage} 
+                // Se imagem falhar ao carregar, marca erro no estado
                 onError={() => {
                   if (hasValidUrl) {
                     setImageErrors(prev => ({ ...prev, [item.id]: true }));
                   }
                 }}
               />
+              {/* Nome do produto (máximo 1 linha) */}
               <Text style={styles.cardTitle} numberOfLines={1}>{item.name}</Text>
+              {/* Quantidade em estoque do produto */}
               <Text style={styles.cardQty}>qntd. {item.quantity}</Text>
             </TouchableOpacity>
           );
         }}
       />
 
+      {/* Botão flutuante no rodapé com padding seguro */}
       <View style={[styles.bottomContainer, { paddingBottom: Math.max(insets.bottom, 16) }]}>
+        {/* Botão primário para navegar até formulário de novo produto */}
         <TouchableOpacity style={styles.addButton} onPress={() => router.push('/form')}>
           <Text style={styles.addButtonText}>+ Adicionar Produto</Text>
         </TouchableOpacity>

@@ -5,20 +5,38 @@ import { Product } from '../src/types';
 import { database } from '../src/database/database';
 import { useSafeAreaInsets } from 'react-native-safe-area-context'; // Importação adicionada
 
+/**
+ * DetailScreen - Tela de visualização detalhada do produto
+ * 
+ * Responsabilidades:
+ * - Exibe informações completas do produto (nome, quantidade, preço, descrição)
+ * - Calcula e exibe o valor total do estoque (preço × quantidade)
+ * - Permite navegação para tela de edição
+ * - Carrega dados do banco quando a tela recebe foco
+ * - Trata falta de produto com mensagem de carregamento
+ * 
+ * @returns {JSX.Element} ScrollView com detalhes do produto ou loading state
+ */
 export default function DetailScreen() {
-  const insets = useSafeAreaInsets(); // Hook para afastar o conteúdo da câmera
+  // Hook que retorna espaçamento seguro da câmera e bordas do dispositivo
+  const insets = useSafeAreaInsets();
+  // Extrai parâmetro 'productId' passado pela rota ao navegar
   const { productId } = useLocalSearchParams<{ productId: string }>();
+  // Estado que armazena dados completos do produto
   const [product, setProduct] = useState<Product | null>(null);
 
+  // Hook que executa quando a tela ganha foco (volta do formulário)
   useFocusEffect(
     useCallback(() => {
+      // Se productId está disponível, busca o produto no banco
       if (productId) {
         const data = database.getById(Number(productId));
-        setProduct(data);
+        setProduct(data); // Atualiza estado com os dados do produto
       }
     }, [productId])
   );
 
+  // Renderiza loading enquanto os dados não são carregados
   if (!product) {
     return (
       <View style={styles.containerCenter}>
@@ -27,65 +45,76 @@ export default function DetailScreen() {
     );
   }
 
+  // Calcula o valor monetário total do produto em estoque (preço × quantidade)
   const grossValue = product.price * product.quantity;
 
   return (
-    // Usamos ScrollView para garantir que descrições longas não cortem a tela em celulares menores
+    // ScrollView permite scroll vertical em descrições longas que não cabem na tela
     <ScrollView 
-      style={[styles.container, { paddingTop: Math.max(insets.top, 20) }]}
+      style={[styles.container, { paddingTop: Math.max(insets.top, 20) }]} 
       contentContainerStyle={styles.scrollContent}
-      showsVerticalScrollIndicator={false}
+      showsVerticalScrollIndicator={false} 
     >
-      {/* Cabeçalho alinhado e protegido da câmera */}
+      {/* Cabeçalho com 3 botões: voltar, título e editar */}
       <View style={styles.header}>
+        {/* Botão voltar - retorna à tela anterior */}
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Text style={styles.backButtonText}>← Voltar</Text>
         </TouchableOpacity>
         
+        {/* Título centralizado da página */}
         <Text style={styles.headerTitle}>Detalhes</Text>
         
+        {/* Botão editar - navega para formulário em modo edição passando o ID */}
         <TouchableOpacity style={styles.editButton} onPress={() => router.push({ pathname: '/form', params: { productId: product.id } })}>
           <Text style={styles.editButtonText}>✏️ Editar</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Container da Imagem Clean */}
+      {/* Container para a imagem do produto com espaçamento */}
       <View style={styles.imageContainer}>
+        {/* Imagem com fallback: se não tiver URL ou falhar, mostra placeholder */}
         <Image 
           source={product.image_url ? { uri: product.image_url } : require('../assets/placeholder.png')} 
           style={styles.productImage} 
         />
       </View>
 
-      {/* Card de Informações do Produto */}
+      {/* Card branco com informações principais do produto */}
       <View style={styles.infoCard}>
+        {/* Nome do produto em destaque */}
         <Text style={styles.productName}>{product.name}</Text>
         
+        {/* Linha: Quantidade em Estoque */}
         <View style={styles.rowInfo}>
           <Text style={styles.label}>Quantidade em Estoque:</Text>
-          <Text style={styles.value}>{product.quantity} un.</Text>
+          <Text style={styles.value}>{product.quantity} un.</Text> {/* Exibe qtd + unidade */}
         </View>
 
+        {/* Linha: Preço Unitário em azul */}
         <View style={styles.rowInfo}>
           <Text style={styles.label}>Preço Unitário:</Text>
-          <Text style={styles.priceValue}>R$ {product.price.toFixed(2)}</Text>
+          <Text style={styles.priceValue}>R$ {product.price.toFixed(2)}</Text> {/* Formatado com 2 casas decimais */}
         </View>
 
+        {/* Separador visual entre preço unitário e total */}
         <View style={styles.divider} />
 
+        {/* Linha: Valor Total do Estoque em verde (destaque importante) */}
         <View style={styles.rowInfo}>
           <Text style={styles.labelTotal}>Valor Total do Estoque:</Text>
+          {/* Total = preço × quantidade */}
           <Text style={styles.grossPriceText}>R$ {grossValue.toFixed(2)}</Text>
         </View>
       </View>
 
-      {/* Seção de Descrição */}
+      {/* Seção de descrição - renderiza apenas se o produto tiver descrição */}
       {product.description ? (
         <View style={styles.descriptionCard}>
           <Text style={styles.descriptionTitle}>Descrição</Text>
           <Text style={styles.descriptionText}>{product.description}</Text>
         </View>
-      ) : null}
+      ) : null} {/* Se não tiver descrição, não renderiza nada */}
     </ScrollView>
   );
 }

@@ -4,77 +4,160 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { database } from '../src/database/database';
 import { useSafeAreaInsets } from 'react-native-safe-area-context'; // Importação adicionada
 
+/**
+ * FormScreen - Tela de cadastro e edição de produtos
+ * 
+ * Responsabilidades:
+ * - Renderiza formulário com 5 campos (imagem, nome, descrição, quantidade, preço)
+ * - Modo duplo: novo produto (vazio) ou edição (pré-preenchido)
+ * - Valida campos obrigatórios (nome, quantidade, preço)
+ * - Salva ou atualiza produto no banco de dados
+ * - Retorna à tela home após sucesso
+ * 
+ * @returns {JSX.Element} View com inputs e botão de salvamento
+ */
 export default function FormScreen() {
-  const insets = useSafeAreaInsets(); // Hook para gerenciar o espaçamento do topo e da câmera
+  const insets = useSafeAreaInsets();  // espaçamento seguro para notches/câmeras
+  // Extrai productId da rota - opcional, indica se é edição ou novo cadastro
   const { productId } = useLocalSearchParams<{ productId?: string }>();
 
-  const [imageUrl, setImageUrl] = useState<string>('');
-  const [name, setName] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
-  const [quantity, setQuantity] = useState<string>('');
-  const [price, setPrice] = useState<string>('');
+  // Estados para cada campo do formulário
+  const [imageUrl, setImageUrl] = useState<string>(''); // URL da imagem do produto
+  const [name, setName] = useState<string>(''); // Nome do produto (obrigatório)
+  const [description, setDescription] = useState<string>(''); // Descrição (opcional)
+  const [quantity, setQuantity] = useState<string>(''); // Quantidade em estoque (obrigatório)
+  const [price, setPrice] = useState<string>(''); // Preço unitário (obrigatório)
 
+  /**
+   * useEffect - Carrega dados do produto em modo edição
+   * 
+   * Lógica:
+   * - Executado quando productId muda ou componente monta
+   * - Se productId existe, busca o produto no banco
+   * - Pré-preenche todos os campos com dados do produto
+   * - Se productId não existe, deixa campos vazios (novo produto)
+   */
   useEffect(() => {
-    if (productId) {
-      const product = database.getById(Number(productId));
-      if (product) {
-        setImageUrl(product.image_url || '');
-        setName(product.name);
-        setDescription(product.description || '');
-        setQuantity(product.quantity.toString());
-        setPrice(product.price.toString());
+    if (productId) { // Se há ID, significa modo edição
+      const product = database.getById(Number(productId)); // Busca produto pelo ID no banco de dados
+      if (product) { // Se encontrou, preenche todos os campos com os dados
+        setImageUrl(product.image_url || ''); // URL ou string vazia
+        setName(product.name); // Nome obrigatório
+        setDescription(product.description || ''); // Descrição ou vazia
+        setQuantity(product.quantity.toString()); // Converte number para string
+        setPrice(product.price.toString()); // Converte number para string
       }
     }
-  }, [productId]);
+  }, [productId]); // Dependência: recria quando productId muda
 
+  /**
+   * handleSave - Valida e salva o produto (novo ou atualizado)
+   * 
+   * Fluxo:
+   * 1. Valida campos obrigatórios (name, quantity, price)
+   * 2. Exibe alerta se algum campo obrigatório estiver vazio
+   * 3. Converte strings para tipos corretos (number)
+   * 4. Insere novo produto OU atualiza existente conforme modo
+   * 5. Navega de volta à tela home (router.replace)
+   * 
+   * @returns {void}
+   */
   const handleSave = () => {
+    // Valida campos obrigatórios
     if (!name || !quantity || !price) {
+      // Mostra alerta se faltam campos obrigatórios
       Alert.alert('Erro', 'Por favor, preencha os campos obrigatórios.');
-      return;
+      return; // Interrompe execução
     }
 
+    // Monta objeto com dados do produto
     const productData = {
-      name,
-      description,
-      quantity: parseInt(quantity, 10) || 0,
-      price: parseFloat(price) || 0,
-      image_url: imageUrl
+      name, // String
+      description, // String
+      quantity: parseInt(quantity, 10) || 0, // Converte string para inteiro
+      price: parseFloat(price) || 0, // Converte string para decimal
+      image_url: imageUrl // URL ou string vazia
     };
 
+    // Se há productId, está em modo edição; senão, novo cadastro
     if (productId) {
-      database.update(Number(productId), productData);
+      database.update(Number(productId), productData); // Atualiza produto existente
     } else {
-      database.insert(productData);
+      database.insert(productData); // Insere novo produto
     }
 
+    // Navega de volta à home e substitui esta tela do histórico
     router.replace('/');
   };
 
   return (
-    // Adicionamos o paddingTop dinâmico no container para empurrar todo o conteúdo para baixo da câmera
+    // Container principal com padding seguro da câmera/notch
     <View style={[styles.container, { paddingTop: Math.max(insets.top, 20) }]}>
       
+      {/* Cabeçalho com botão voltar, título dinâmico e view vazia para centralizar */}
       <View style={styles.header}>
-        {/* Adicionado padding interno e fundo sutil para criar uma área de clique gigante no botão voltar */}
+        {/* Botão voltar - retorna à tela anterior */}
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Text style={styles.backArrow}>← Voltar</Text>
         </TouchableOpacity>
         
+        {/* Título dinâmico: "Editar Produto" ou "Novo Produto" conforme o modo */}
         <Text style={styles.headerTitle}>
-          {productId ? 'Editar Produto' : 'Novo Produto'}
+          {productId ? 'Editar Produto' : 'Novo Produto'} {/* Muda título baseado no modo */}
         </Text>
         
-        {/* View vazia apenas para manter o título perfeitamente centralizado no flexbox */}
+        {/* View vazia mantém o título perfeitamente centralizado no flexbox */}
         <View style={{ width: 80 }} />
       </View>
 
-      {/* Alterados os placeholders e cores de borda para tons neutros e profissionais */}
-      <TextInput style={styles.input} placeholder="URL da imagem (opcional)" placeholderTextColor="#9ca3af" value={imageUrl} onChangeText={setImageUrl} />
-      <TextInput style={styles.input} placeholder="Nome do produto *" placeholderTextColor="#9ca3af" value={name} onChangeText={setName} />
-      <TextInput style={styles.input} placeholder="Descrição do produto (opcional)" placeholderTextColor="#9ca3af" value={description} onChangeText={setDescription} />
-      <TextInput style={styles.input} placeholder="Quantidade atual em estoque *" placeholderTextColor="#9ca3af" keyboardType="numeric" value={quantity} onChangeText={setQuantity} />
-      <TextInput style={styles.input} placeholder="Valor unitário (R$) *" placeholderTextColor="#9ca3af" keyboardType="numeric" value={price} onChangeText={setPrice} />
+      {/* Campo 1: URL da imagem (opcional) */}
+      <TextInput 
+        style={styles.input} 
+        placeholder="URL da imagem (opcional)" 
+        placeholderTextColor="#9ca3af" 
+        value={imageUrl} 
+        onChangeText={setImageUrl} 
+      />
+      
+      {/* Campo 2: Nome do produto (obrigatório) */}
+      <TextInput 
+        style={styles.input} 
+        placeholder="Nome do produto *" 
+        placeholderTextColor="#9ca3af" 
+        value={name} 
+        onChangeText={setName} 
+      />
+      
+      {/* Campo 3: Descrição (opcional) */}
+      <TextInput 
+        style={styles.input} 
+        placeholder="Descrição do produto (opcional)" 
+        placeholderTextColor="#9ca3af" 
+        value={description} 
+        onChangeText={setDescription} 
+      />
+      
+      {/* Campo 4: Quantidade (obrigatório, só aceita números) */}
+      <TextInput 
+        style={styles.input} 
+        placeholder="Quantidade atual em estoque *" 
+        placeholderTextColor="#9ca3af" 
+        keyboardType="numeric" 
+        value={quantity} 
+        onChangeText={setQuantity} 
+      />
+      
+      {/* Campo 5: Preço unitário (obrigatório, só aceita números) */}
+      <TextInput 
+        style={styles.input} 
+        placeholder="Valor unitário (R$) *" 
+        placeholderTextColor="#9ca3af" 
+        keyboardType="numeric" 
+        value={price} 
+        onChangeText={setPrice} 
+      />
 
+      {/* Botão de salvamento primário */}
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.saveButtonText}>Confirmar e Salvar</Text>
       </TouchableOpacity>
